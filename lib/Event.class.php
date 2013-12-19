@@ -36,7 +36,7 @@ class Event {
   
   //// End Time ////
   public function getEndDateTime($format=null) {
-    if($format) return $this->startDateTime->format($format);
+    if($format) return $this->endDateTime->format($format);
     else return $this->endDateTime;
   }
   
