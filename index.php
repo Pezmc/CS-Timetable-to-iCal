@@ -1,9 +1,9 @@
 <?php
 
-include_once('simple_html_dom.php');
+include_once('vendor/simple_html_dom.php');
+include_once('vendor/htmLawed.php');
 include_once('Subject.class.php');
 include_once('SubjectFactoryFromHTML.class.php');
-include_once('htmLawed.php');
 
 //////////
 
