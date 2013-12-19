@@ -13,22 +13,25 @@ class CalendarFromTimetableFactory {
   		// Create event for each subject
   		$event = new CalendarEvent();
   		$event->setTitle($subject->getTitle());
-  		$event->setDescription(sprintf('Subject: %s\nGroups: %s\nWeeks: %s',
+  		$event->setDescription(sprintf('Subject: %s\nGroups: %s\nWeeks: %s\n\nOccurrences:%s\n',
 								  										$subject->getTitle(),
 								  										implode(", ", $subject->getGroups()),
-								  										$subject->getWeekInfo()));
+								  										$subject->getWeekInfo(),
+  																		implode('\n - ', $subject->getDates('l jS F Y'))
+  													));
   		$event->setLocation($subject->getLocation());
  
   		// Add an event for every occurance
   		foreach($subject->getDates() as $date) {
+  			$dateEvent = clone $event;
+
+  			$dateEvent->setStartDate($date);
+  			$dateEvent->setStartTimeString($subject->getStartTime());
   			
-  			$event->setStartDateTime($date);
-  			$event->setStartTimeString($subject->getStartTime());
+  			$dateEvent->setEndDate($date);
+  			$dateEvent->setEndTimeString($subject->getEndTime());
   			
-  			$event->setEndDateTime($date);
-  			$event->setEndTimeString($subject->getEndTime());
-  			
-  			$calendar->addEvent($event);
+  			$calendar->addEvent($dateEvent);
   		}
   		
   	}

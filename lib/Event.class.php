@@ -13,6 +13,7 @@ class Event {
   
   //// Start Time ////
   public function getStartDateTime($format=null) {
+  	
     if($format) return $this->startDateTime->format($format);
     else return $this->startDateTime;
   }
@@ -26,7 +27,7 @@ class Event {
    */
   public function setStartTimeString($time) {
     $times = $this->hoursMinsFromString($time);
-  
+    
     $this->startDateTime->setTime($times[0], $times[1]);
   }
   
@@ -93,6 +94,18 @@ class Event {
       die("I expect the time in the format 00:00");
       
     return split(':', $time, 2);
+  }
+  
+  /**
+   * Implement PHP __clone to create a deep clone
+   * This fixes a bug with shared datetime references
+   */
+  public function __clone() {
+  	foreach($this as $key => $val) {
+  		if (is_object($val) || (is_array($val))) {
+  			$this->{$key} = clone $val;
+  		}
+  	}
   }
 }
 
