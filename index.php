@@ -170,7 +170,11 @@ function getCachedTimetable($url) {
 	$timetablesHTML = getCachedURL($url);
 	$html = str_get_html($timetablesHTML);
 	
-	return getTimetableFromTimetableHTML($html);;
+	// Create and cache timetable
+	$timetable = getTimetableFromTimetableHTML($html);
+	file_put_contents($cache_file, serialize($timetable));
+	
+	return $timetable;
 }
 
 function getTimetableFor($year, $group, $semester) {
