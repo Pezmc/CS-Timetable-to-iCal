@@ -17,9 +17,16 @@ class Subject {
   }
   
   /**
+   * @param $format Convert the dates to a string
    * @return DateTime[]
    */
-  public function getDates() {
+  public function getDates($format=null) {
+  	if($format != null) {
+  		$dates = array();
+  		foreach($this->dates as $date)
+  			$dates[] = $date->format($format);
+  		return $dates;
+  	}
   	return $this->dates;
   }
   
