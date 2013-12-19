@@ -17,6 +17,22 @@ class Timetable {
   
     $this->timetableArray[$dayOfWeek][$time][] = $subject;
   }
+  
+  
+  /**
+   * @return Subject[] All Subjects
+   */
+  public function getSubjects() {
+  	$allSubjects = array();
+  	
+  	// Clumsy but effective
+  	foreach($this->timetableArray as $times)
+  		foreach($times as $events)
+  			foreach($events as $subject)
+  				$allSubjects[] = $subject;
+  	
+  	return $allSubjects;
+  }
 
   /**
    * Echo out this table as an html table

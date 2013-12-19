@@ -3,6 +3,10 @@
 class Calendar {
 
   private $events = array();
+  
+  public function addEvent(CalendarEvent $event) {
+  	$this->events[] = $event;
+  }
 
   public function ServeFile() {
   // Forces file download instead of web page
@@ -20,17 +24,6 @@ class Calendar {
 
   // For every row in the input
   foreach($rows as $row){
-
-    $data = explode("\t", $row);
-
-    // Simple file log for debugging
-    @fwrite($fh, '['. date("Y-m-d H:i:s") . '] ' . $row. "\n");
-
-    //Exam Code	Title	Date	Location	Seat	Start	Finish
-    if(empty($data)||empty($data[6])||strtolower($data[0])=="exam code") continue;
-
-    $start = strtotime($data[2]." ".$data[5]);
-    $end = strtotime($data[2]." ".$data[6]);
 
     print("BEGIN:VEVENT\r\n");
     print("DTSTART:".date("Ymd", $start)."T".date("His", $start)."\r\n");
