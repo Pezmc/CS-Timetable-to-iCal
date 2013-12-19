@@ -5,8 +5,10 @@ include_once('vendor/htmLawed.php');
 include_once('lib/Subject.class.php');
 include_once('lib/SubjectFactoryFromHTML.class.php');
 include_once('lib/Calendar.class.php');
-include_once('lib/CalendarEvent.class.php');
 include_once('lib/Event.class.php');
+include_once('lib/CalendarEvent.class.php');
+include_once('lib/Timetable.class.php');
+include_once('lib/CalendarFromTimetableFactory.class.php');
 
 //////////
 
@@ -48,7 +50,7 @@ function getCachedTimetablesList() {
     return json_decode($data, TRUE);
   }
   
-  $data = getTimetables();
+  $data = getTimetableURLs();
   file_put_contents($cache_file, json_encode($data), LOCK_EX);
   return $data;
 
@@ -56,7 +58,7 @@ function getCachedTimetablesList() {
 
 // --- Parse the timetables list into all the possible timetable combinations ---
 
-function getTimetables() {
+function getTimetableURLs() {
 
   // Download the timetable page
   $timetablesHTML = getCachedURL("http://studentnet.cs.manchester.ac.uk/ugt/timetable/");
@@ -103,58 +105,90 @@ function getTimetables() {
   return $timetables;
 }
 
-$timetables = getCachedTimetablesList();
-
-if(empty($timetables["Year 1"]["All First Years"]["Sem1"]))
-  die("Empty...");
-
-$url = 'http://studentnet.cs.manchester.ac.uk/ugt/timetable/'.$timetables["Year 1"]["All First Years"]["Sem1"];
-$url = htmlspecialchars_decode($url);
-
-$timetablesHTML = getCachedURL($url);
-
-$html = str_get_html($timetablesHTML);
-
-// Set a list of possible subjects
-$subjectList = array();
-$lecturesHTML = $html->find('div.timetablebackground ul li');
-foreach($lecturesHTML as $lectureHTML) {
-  $lectureHTML = explode(" ", $lectureHTML->plaintext, 2);
-  $subjectList[$lectureHTML[0]] = $lectureHTML[1];
+function getSubjectsFromTimetableHTML($timetableHTML) {
+	
+	// Set a list of possible subjects
+	$subjectList = array();
+	$lecturesHTML = $timetableHTML->find('div.timetablebackground ul li');
+	foreach($lecturesHTML as $lectureHTML) {
+		$lectureHTML = explode(" ", $lectureHTML->plaintext, 2);
+		$subjectList[$lectureHTML[0]] = $lectureHTML[1];
+	}
+	
+	return $subjectList;
 }
 
-// Conver the timetable to an array
-$timetable = new Timetable();
-$tableHTML = $html->find('div[id=timetabletable] table', 0);
-$rowNumber = 0;
-foreach($tableHTML->find('tr') as $row) {
-  $rowNumber++;
+function getTimetableFromTimetableHTML($timetableHTML) {
+	
+	// Extract the subject names
+	$subjectList = getSubjectsFromTimetableHTML($timetableHTML);
+	
+	// Parse the timetable HTML
+	$timetable = new Timetable();
+	$tableHTML = $timetableHTML->find('div[id=timetabletable] table', 0);
+	$rowNumber = 0;
+	foreach($tableHTML->find('tr') as $row) {
+		$rowNumber++;
+			
+		// Skip title, filter and day rows
+		if($rowNumber <= 3) continue;
+			
+		// Skip notes and key
+		if($rowNumber >= 14) continue;
+	
+		// Read in each column
+		$time = "";
+		$columnID = 0;
+		foreach($row->find('td') as $column) {
+			$columnID++;
+	
+			if($columnID <= 1) {
+				$time = $column->plaintext;
+				continue;
+			}
+	
+			foreach($column->find('div') as $lectureHTML) {
+				$subject = SubjectFactoryFromHTML::build($lectureHTML);
+				if($subject && $subject->isValid()) $timetable->addEvent($columnID-1, $time, $subject);
+			}
+		}
+	}
+	
+	return $timetable;
+}
   
-  // Skip title, filter and day rows
-  if($rowNumber <= 3) continue;
-  
-  // Skip notes and key
-  if($rowNumber >= 14) continue;
-
-  // Read in each column
-  $time = "";
-  $columnID = 0;
-  foreach($row->find('td') as $column) {
-    $columnID++;
-  
-    if($columnID <= 1) {
-      $time = $column->plaintext;
-      continue;
-    }
-    
-    foreach($column->find('div') as $lectureHTML) {
-      $subject = SubjectFactoryFromHTML::build($lectureHTML);
-      if($subject && $subject->isValid()) $timetable->addEvent($columnID-1, $time, $subject);
-    }     
-  }
+function getCachedTimetable($url) {
+	
+	$cache_file = 'cache/timetable_'.md5($url).'.txt';
+	
+	// Check in our object cache first
+	$timetableText = getCachedFileOrFalse($cache_file);
+	if($timetableText && ($timetable = unserialize($timetableText)))
+		return $timetable;
+	
+	// Download and parse a (cache) of the timetable
+	$timetablesHTML = getCachedURL($url);
+	$html = str_get_html($timetablesHTML);
+	
+	return getTimetableFromTimetableHTML($html);;
 }
 
-$timetable->printTimetableAsHTML();
+function getTimetableFor($year, $group, $semester) {
+	
+	$timetables = getCachedTimetablesList();
+	
+	if(empty($timetables[$year][$group][$semester])) 
+		die("There is no known timetable by $year, $group, $semester...");
+	
+	$url = 'http://studentnet.cs.manchester.ac.uk/ugt/timetable/'.$timetables[$year][$group][$semester];
+	$url = htmlspecialchars_decode($url);
+	
+	// Get a timetable from cache or create from new
+	return getCachedTimetable($url);
+}
 
-//var_dump($timetable);
+$timetable = getTimetableFor("Year 1", "All First Years", "Sem1");
+
+$calendar = CalendarFromTimetableFactory::build($timetable);
+echo $calendar->createVCalendar();
 
