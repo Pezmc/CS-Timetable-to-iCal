@@ -5,8 +5,6 @@ class Calendar {
   private $events = array();
   
   public function addEvent(CalendarEvent $event) {
-  	echo "Add:";
-  	var_dump($event);
   	$this->events[] = $event;
   }
 
@@ -24,7 +22,6 @@ class Calendar {
   	
   	/* @var $event CalendarEvent */
   	foreach($this->events as $event) {
-  		var_dump($event);
   		$vcalendar .= $this->tagsToVCalendar($event->getVEventTagArray());
   	}
   	
