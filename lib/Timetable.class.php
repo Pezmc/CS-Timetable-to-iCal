@@ -49,6 +49,7 @@ class Timetable {
     }
     $html .= "</tbody></table>";
 
+    include_once('vendor/htmLawed.php');
     echo htmLawed($html, array('tidy'=>4)); ;
   }
   
