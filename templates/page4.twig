@@ -1,0 +1,6 @@
+<form action="?{{ vars|url_encode }}" method="POST">
+{% for key, value in subjects %}
+<input type="checkbox" name="subject[]" value="{{ key }}" checked="checked" />{{ value }} [{{ key }}]<br />
+{% endfor %}
+<input type="submit">
+</form>

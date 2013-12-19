@@ -1,0 +1,3 @@
+{% for key, value in timetables %}
+<a href="?{{ vars|url_encode }}&{{ var }}={{ key }}">{{ key }}</a>
+{% endfor %}
