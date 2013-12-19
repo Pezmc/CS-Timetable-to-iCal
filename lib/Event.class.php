@@ -25,7 +25,7 @@ class Event {
    * Set the time from the format \d{1,2}:\d{2}
    */
   public function setStartTimeString($time) {
-    $times = $this->hoursMineFromString($time);
+    $times = $this->hoursMinsFromString($time);
   
     $this->startDateTime->setTime($times[0], $times[1]);
   }
@@ -48,7 +48,7 @@ class Event {
    * @param $time Time in the format \d{1,2}:\d{2}
    */
   public function setEndTimeString($time) {
-    $times = $this->hoursMineFromString($time);
+    $times = $this->hoursMinsFromString($time);
   
     $this->endDateTime->setTime($times[0], $times[1]);
   }
@@ -94,40 +94,6 @@ class Event {
       
     return split(':', $time, 2);
   }
-}
-
-class CalenderEvent extends Event {
-  
-  public function getVEventString() {
-    $tags[] = array();
-    
-    $tags['BEGIN'] = 'VEVENT';
-    $tags['DTSTART'] = $this->geEndDateTime('Ymd\THis\Z');
-    $tags['DTEND'] = $this->getStartDateTime('Ymd\THis\Z');
-    $tags['SUMMARY'] = $this->escapeString($this->getTitle());
-    //$tags['ORGANIZER'];CN=John Doe:MAILTO:john.doe@example.com
-    $tags['UID'] = md5($this->getSummary());
-    $tags['DESCRIPTION'] = $this->escapeNewLines($this->getSummary());
-    $tags['LOCATION'] = $this->escapeString($this->getLocation());
-    
-    
-    $tags['END'] = 'VEVENT';
-    
-    $vevent = '';
-    foreach($vevent as $tag => $value)
-      $vevent .= sprintf("%s:%s\r\n", $tag, $value);
-      
-    return $vevent;
-  }
-  
-  private function escapeNewLines($string) {
-    preg_replace("/((\r?\n)|(\r\n?))/", '\n', $this->escapeString($string));
-  }
-  
-  private function escapeString($string) {
-    return preg_replace('/([\,;])/','\\\$1', $string);
-  }
-  
 }
 
 ?>

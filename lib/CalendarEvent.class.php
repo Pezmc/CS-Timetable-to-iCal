@@ -3,10 +3,10 @@
 class CalendarEvent extends Event {
   
 	public function getVEventTagArray() {
-		$tags[] = array();
+		$tags = array();
 		
 		$tags['BEGIN'] = 'VEVENT';
-		$tags['DTSTART'] = $this->geEndDateTime('Ymd\THis\Z');
+		$tags['DTSTART'] = $this->getEndDateTime('Ymd\THis\Z');
 		$tags['DTEND'] = $this->getStartDateTime('Ymd\THis\Z');
 		$tags['SUMMARY'] = $this->escapeString($this->getTitle());
 		//$tags['ORGANIZER'];CN=John Doe:MAILTO:john.doe@example.com

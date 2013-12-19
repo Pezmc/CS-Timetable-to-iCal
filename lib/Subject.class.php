@@ -20,7 +20,7 @@ class Subject {
    * @return DateTime[]
    */
   public function getDates() {
-  	return $this->dates();
+  	return $this->dates;
   }
   
   public function setDates($dates) {
