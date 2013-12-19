@@ -5,6 +5,7 @@ class Subject {
   private $groups = array();
   private $startTime;
   private $endTime;
+  private $id;
   private $title;
   private $location;
   private $weekInfo;
@@ -34,6 +35,14 @@ class Subject {
     $this->dates = $dates;
   }
   
+  public function getID() {
+  	return $this->id;
+  }
+  
+  public function setID($id) {
+  	$this->id = $id;
+  }
+  
   /**
    * @return string Time in format 00:00
    */
@@ -57,7 +66,7 @@ class Subject {
   }
 
   public function getTitle() {
-	return $this->title;
+		return $this->title;
   }
 
   public function setTitle($title) {
@@ -96,7 +105,7 @@ class Subject {
    * @return boolean
    */
   public function isValid() {
-    return isset($this->title) && !empty($this->dates);
+    return isset($this->id) && !empty($this->dates);
   }
   
   public function __toString() {

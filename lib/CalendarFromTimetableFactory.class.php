@@ -5,14 +5,20 @@ class CalendarFromTimetableFactory {
   public static function build(Timetable $timetable) {
   	$calendar = new Calendar();
   	
-  	$subjects = $timetable->getSubjects();
+  	$subjects = $timetable->getSubjectEvents();
   	
   	/* @var $subject Subject */
   	foreach($subjects as $subject) {
   		
   		// Create event for each subject
   		$event = new CalendarEvent();
-  		$event->setTitle($subject->getTitle());
+  		
+  		// Title (including id if we have it)
+  		if($subject->getID() != $subject->getTitle())
+  			$event->setTitle(sprintf('[%s] %s', $subject->getID(), $subject->getTitle()));
+  		else 
+  			$event->setTitle($subject->getID());
+  		
   		$event->setDescription(sprintf('Subject: %s\nGroups: %s\nWeeks: %s\n\nOccurrences:%s\n',
 								  										$subject->getTitle(),
 								  										implode(", ", $subject->getGroups()),

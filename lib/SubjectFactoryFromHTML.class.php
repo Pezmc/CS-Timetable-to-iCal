@@ -11,7 +11,7 @@ class SubjectFactoryFromHTML {
       
       // Add the subject ID and groups
       if($subjectHTML) {
-        $subject->setTitle(self::getSubjectIDFromSubjectHTML($subjectHTML));
+        $subject->setID(self::getSubjectIDFromSubjectHTML($subjectHTML));
         $subject->setGroups(self::getGroupsFromSubjectHTML($subjectHTML));
         
         // The CS timetable puts lots of info in the HTML title...
