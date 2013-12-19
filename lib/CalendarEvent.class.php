@@ -13,15 +13,31 @@ class CalendarEvent extends Event {
 		$tags['UID'] = md5($this->getTitle()) . md5($this->getStartDateTime('U')) . md5($this->getEndDateTime('U'));
 		$tags['DESCRIPTION'] = $this->escapeNewLines($this->getDescription());
 		$tags['LOCATION'] = $this->escapeString($this->getLocation());
+		
+		$tags['-'] = $this->getVStringFromTags($this->getAlarm());
+		
 		$tags['END'] = 'VEVENT';
 
 		return $tags;
 	}
 	
-  public function getVEventString() {
+	public function getAlarm() {
+		$tags = array();
+		
+		// Add an alert 10 mins before the end
+		$tags['BEGIN'] = 'VALARM';
+		$tags['ACTION'] = 'DISPLAY';
+		$tags['DESCRIPTION'] = 'This is an event reminder';
+		$tags['TRIGGER'] = '-P0DT0H10M0S';
+		$tags['END'] = 'VALARM';
+		
+		return $tags;
+	}
+	
+  public function getVStringFromTags($tags) {
 
     $vevent = '';
-    foreach($this->getVEventTagArray() as $tag => $value)
+    foreach($tags as $tag => $value)
       $vevent .= sprintf("%s:%s\r\n", $tag, $value);
       
     return $vevent;

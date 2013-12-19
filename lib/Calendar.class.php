@@ -35,6 +35,8 @@ class Calendar {
   	$tags = array();
   	$tags['BEGIN'] = 'VCALENDAR';
   	$tags['VERSION'] = '2.0';
+  	$tags['X-WR-CALNAME'] = "CS Manchester Timetable";
+  	$tags['X-WR-TIMEZONE'] = date_default_timezone_get();
   	$tags['PRODID'] = "-//Pez Cuckow//CS Timetable to Ical//EN";
   	$tags['UID'] = md5(uniqid(mt_rand(), true)) . "@PezCuckow.com";
   	return $tags;
@@ -47,8 +49,11 @@ class Calendar {
   
   private function tagsToVCalendar($tags) {
   	$vcalendar = '';
-  	foreach($tags as $tag => $value)
-  		$vcalendar .= strtoupper($tag) . ':' . $value . "\r\n";
+  	foreach($tags as $tag => $value) {
+  		// - is a special tag containing a strine
+  		if($tag == '-') $vcalendar .= $value;
+  		else $vcalendar .= strtoupper($tag) . ':' . $value . "\r\n";
+  	}
   	
   	return $vcalendar;
   }
