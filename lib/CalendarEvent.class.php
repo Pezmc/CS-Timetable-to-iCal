@@ -10,7 +10,7 @@ class CalendarEvent extends Event {
 		$tags['DTEND'] = $this->getEndDateTime('Ymd\THis\Z');
 		$tags['SUMMARY'] = $this->escapeString($this->getTitle());
 		//$tags['ORGANIZER'];CN=John Doe:MAILTO:john.doe@example.com
-		$tags['UID'] = md5($this->getTitle());
+		$tags['UID'] = md5($this->getTitle()) . md5($this->getStartDateTime('U')) . md5($this->getEndDateTime('U'));
 		$tags['DESCRIPTION'] = $this->escapeNewLines($this->getDescription());
 		$tags['LOCATION'] = $this->escapeString($this->getLocation());
 		$tags['END'] = 'VEVENT';
