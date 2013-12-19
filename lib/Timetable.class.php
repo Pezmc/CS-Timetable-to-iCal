@@ -46,22 +46,37 @@ class Timetable {
   public function getSubjectEvents() {
   	$allSubjects = array();
   	
-  	// Clumsy but effective
-  	foreach($this->timetableArray as $times) {
+  	// For every day of the week
+  	foreach($this->timetableArray as $dow => $times) {
   		
-  		foreach($times as $events) {
+  		// For every time of day
+  		foreach($times as $time => $events) {
+
+  			// Handle duplicate events (two hour events back to back)
+  			$lastHour = isset($thisHour) ? $thisHour : array();
+  			$thisHour = array();
   			
   		  /* @var $subject Subject */
   			foreach($events as $subject) {
   				
   				// If this subject isn't excluded
-  				if(!array_key_exists($subject->getID(), $this->excludedSubjects)) {
-  					if(isset($this->possibleSubjects[$subject->getID()]))
-  						$subject->setTitle($this->possibleSubjects[$subject->getID()]);
-  					else 
-  						$subject->setTitle($subject->getID());
+  				if(array_key_exists($subject->getID(), $this->excludedSubjects))
+  					continue;
+  				
+  				// Set the title using our subject list
+  				if(isset($this->possibleSubjects[$subject->getID()]))
+  					$subject->setTitle($this->possibleSubjects[$subject->getID()]);
+  				else 
+  					$subject->setTitle($subject->getID());
+  				
+  				// Add to our arrays if it wasn't there last hour
+  				if(!array_key_exists($subject->getID(), $lastHour))	 {
   					$allSubjects[] = $subject;
   				}
+  				
+  				// Include in the last hour list
+  				$thisHour[$subject->getID()] = $subject->getID();
+  				
   			}
   		}
   	}
