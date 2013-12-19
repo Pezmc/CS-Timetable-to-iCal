@@ -19,12 +19,16 @@ class CalendarFromTimetableFactory {
   		else 
   			$event->setTitle($subject->getID());
   		
-  		$event->setDescription(sprintf('Subject: %s\nGroups: %s\nWeeks: %s\n\nOccurrences:%s\n',
-								  										$subject->getTitle(),
-								  										implode(", ", $subject->getGroups()),
-								  										$subject->getWeekInfo(),
-  																		implode('\n - ', $subject->getDates('l jS F Y'))
-  													));
+  		// Description
+  		$description = '';
+  		$description .= empty($subject->getTitle()) ? '' : sprintf('Subject: %s\n', $subject->getTitle());
+  		$description .= empty($subject->getID()) ? '' : sprintf('Course Code: %s\n', $subject->getID());
+  		$description .= empty($subject->getGroups()) ? '' : sprintf('Groups: %s\n', implode(", ", $subject->getGroups()));
+  		$description .= empty($subject->getWeekInfo()) ? '' : sprintf('Week: %s\n', $subject->getWeekInfo());
+  		$description .= empty($subject->getDates()) ? '' : sprintf('\nOccurrences: %s\n', '\n - '.implode('\n - ', $subject->getDates('l jS F Y')));
+  		$event->setDescription($description);
+  		
+  		// Location
   		$event->setLocation($subject->getLocation());
  
   		// Add an event for every occurance
