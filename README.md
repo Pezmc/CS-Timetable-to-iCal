@@ -14,7 +14,7 @@ Please just send pull requests with any enchancements or bug fixes.
 Todo
 ====
 
-- Handle two hour events
+- ~~Handle two hour events~~ Done
 - Add a nicer frontend
 - Allow the user to select their group
 - Handle subjects without a course code (1st year tutorial I'm looking at you!)
