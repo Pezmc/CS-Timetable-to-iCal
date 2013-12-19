@@ -113,11 +113,15 @@ function getSubjectsFromTimetableHTML($timetableHTML) {
 
 function getTimetableFromTimetableHTML($timetableHTML) {
 	
+	// Our timetable instance
+	$timetable = new Timetable();
+	
 	// Extract the subject names
-	$subjectList = getSubjectsFromTimetableHTML($timetableHTML);
+	foreach(getSubjectsFromTimetableHTML($timetableHTML) as $id => $name) {
+		$timetable->addSubject($id, $name);
+	}
 	
 	// Parse the timetable HTML
-	$timetable = new Timetable();
 	$tableHTML = $timetableHTML->find('div[id=timetabletable] table', 0);
 	$rowNumber = 0;
 	foreach($tableHTML->find('tr') as $row) {

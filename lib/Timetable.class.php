@@ -2,10 +2,31 @@
 
 class Timetable {
 
-  private $timetableArray;
+  private $timetableArray = array();
+  private $possibleSubjects = array();
+  private $excludedSubjects = array();
   
   public function __construct() {
     
+  }
+  
+  /**
+   * Add a subject to the timetable
+   */
+  public function addSubject($id, $name) {
+  	$this->possibleSubjects[$id] = $name;
+  }
+  
+  public function getSubjects() {
+  	return $this->possibleSubjects;
+  }
+  
+  public function excludeSubjects($array=null) {
+  	if(is_array($array)) {
+	  	foreach($array as $subjectID => $value) {
+	  		$excludedSubjects[$subjectID] = $value;
+	  	}
+  	}
   }
   
   /**
@@ -22,14 +43,28 @@ class Timetable {
   /**
    * @return Subject[] All Subjects
    */
-  public function getSubjects() {
+  public function getSubjectEvents() {
   	$allSubjects = array();
   	
   	// Clumsy but effective
-  	foreach($this->timetableArray as $times)
-  		foreach($times as $events)
-  			foreach($events as $subject)
-  				$allSubjects[] = $subject;
+  	foreach($this->timetableArray as $times) {
+  		
+  		foreach($times as $events) {
+  			
+  		  /* @var $subject Subject */
+  			foreach($events as $subject) {
+  				
+  				// If this subject isn't excluded
+  				if(!array_key_exists($subject->getID(), $this->excludedSubjects)) {
+  					if(isset($this->possibleSubjects[$subject->getID()]))
+  						$subject->setTitle($this->possibleSubjects[$subject->getID()]);
+  					else 
+  						$subject->setTitle($subject->getID());
+  					$allSubjects[] = $subject;
+  				}
+  			}
+  		}
+  	}
   	
   	return $allSubjects;
   }
