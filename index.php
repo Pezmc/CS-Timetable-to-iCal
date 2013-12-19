@@ -13,7 +13,7 @@ function autoloadLib($className) {
 }
 spl_autoload_register('autoloadLib');
 
-require_once 'Twig/Autoloader.php';
+require_once 'Twig/lib/Twig/Autoloader.php';
 Twig_Autoloader::register();
 
 $loader = new Twig_Loader_Filesystem('templates');
