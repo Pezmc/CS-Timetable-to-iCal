@@ -1,0 +1,33 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<title>CS Timetable to iCal</title>
+<script src="//ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>
+<script src="js/jquery.steps.min.js"></script>
+        <link rel="stylesheet" href="css/normalize.css">
+        <link rel="stylesheet" href="css/main.css">
+        <link rel="stylesheet" href="css/jquery.steps.css">
+</head>
+<body>
+<div style="width:800px;margin:0 auto;padding-top:50px;">
+<div id="wizard">
+    <h1>First Step</h1>
+    <div>First Content</div>
+ 
+    <h1>Second Step</h1>
+    <div>Second Content</div>
+</div>
+</div>
+<script>
+
+    $("#wizard").steps({
+        headerTag: "h1",
+        bodyTag: "div",
+        transitionEffect: "slideLeft"
+£
+    });
+
+</script>
+</body>
+</html>

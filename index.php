@@ -194,5 +194,5 @@ function getTimetableFor($year, $group, $semester) {
 $timetable = getTimetableFor("Year 1", "All First Years", "Sem1");
 
 $calendar = CalendarFromTimetableFactory::build($timetable);
-echo $calendar->createVCalendar();
+echo $calendar->downloadVCalendar();
 
