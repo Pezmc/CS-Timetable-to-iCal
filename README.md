@@ -16,5 +16,6 @@ Todo
 
 - Handle two hour events
 - Add a nicer frontend
+- Allow the user to select their group
 - Handle subjects without a course code (1st year tutorial I'm looking at you!)
 - Move timetable.php into a class
