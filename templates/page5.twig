@@ -1,0 +1,31 @@
+<table id="timetable" cellspacing='0'>
+<thead>
+  <tr><th>Time</th><th>Monday</th><th>Tuesday</th><th>Wednesday</th><th>Thursday</th><th>Friday</th></tr>
+</thead>
+<tbody>
+{% for time, row in table %}
+  <tr>
+    <td>{{ time }}</td>
+  {% for columnID, subjects in row %}
+    <td>
+    {% for subject in subjects %}
+      {# Print out the subject #}
+      {% set title = '' %}
+      {% if subject.Title is not empty %}{% set title = title ~ subject.Title %}{% endif %}
+      {% if subject.WeekInfo is not empty %}{% set title = title ~ ' - Week ' ~ subject.WeekInfo %}{% endif %}
+      {% if subject.Groups is not empty %}{% set title = title ~ ' - Group(s) ' ~ subject.Groups|join('+') %}{% endif %}
+      <div title="{{ title }}">
+        <span style="float:left">{{ subject.ID }}</span>
+        <span style="float:right" title="{{ subject.Location }}">
+          {{ subject.Location|length > 6 ? subject.Location|slice(0, 6)|trim ~ '...' : subject.Location }}
+        </span>
+      </div>
+    {% endfor %}
+    </td>
+  {% else %}
+    <td></td>
+  {% endfor %}
+  </tr>
+{% endfor %}
+</tbody>
+</table>
