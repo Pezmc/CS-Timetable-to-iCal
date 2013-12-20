@@ -46,7 +46,7 @@
     	    $page.find('form').submit(function(e) {
     	    	
     	      // Send a post
-    	      var url = 'index.php'+$(this).attr('action');
+    	      var url = 'ajax.php'+$(this).attr('action');
     	      $nextpage.load( url, $(this).serializeArray(), function() {
     	    	  makeClickable($(this), $(pages[currentPage+1]));
     	      });
@@ -66,7 +66,7 @@
 				$(this).click(function(e){
 					
 					// Load the content for the next page
-					var url = 'index.php'+$(this).attr('href');		
+					var url = 'ajax.php'+$(this).attr('href');		
 					$nextpage.load(url, function() {
 						makeClickable($(this), $(pages[currentPage+1]));
 					});
@@ -81,7 +81,7 @@
 			});
 		}
 		
-		$('#year').load('index.php', function() {
+		$('#year').load('ajax.php', function() {
 			  makeClickable($(pages[0]), $(pages[1]));
 		});
 	});
@@ -111,7 +111,7 @@
           onFinishing: function (event, currentIndex)
           {
               
-        	  var downloadURL = "index.php?page=6"; 
+        	  var downloadURL = "ajax.php?page=6"; 
         	  $.ajax({
         		  type: "HEAD",
         		  url: downloadURL
@@ -129,7 +129,7 @@
                       $(pages[4]).fadeOut(function() {
                     	  
                     	  // Unfortunately window location must come after all ajax
-                    	  $(this).load("index.php?page=7", function () {
+                    	  $(this).load("ajax.php?page=7", function () {
                     		  
                     		  $(this).fadeIn();
                     		  
