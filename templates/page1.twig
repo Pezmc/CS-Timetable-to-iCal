@@ -1,3 +1,3 @@
 {% for key, value in timetables %}
-<a href="?{{ vars|url_encode }}&{{ var }}={{ key|url_encode }}">{{ key }}</a>
+<a href="?{{ vars|url_encode }}&{{ var }}={{ key|url_encode }}" class="clean-gray">{{ key }}</a>
 {% endfor %}
