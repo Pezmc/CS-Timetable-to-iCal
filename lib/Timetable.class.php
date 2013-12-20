@@ -82,9 +82,10 @@ class Timetable {
   
   
   /**
-   * Convert this timetable to a row/column structure
+   * Convert this timetable to a row/column structure suitable for a table
+   * @return array[array[subject[]]] An array of subjects in the format $table[time][column] = Subject[];
    */
-  private function getTimetableTableArray() {
+  public function getTimetableTableArray() {
     $timetableTable = array();
     
     // For every day of the week
@@ -146,6 +147,7 @@ class Timetable {
   	
   	}
   	
+  	return $validSubjects;
   }
   
 }
