@@ -52,32 +52,9 @@ class Timetable {
   		// For every time of day
   		foreach($times as $time => $events) {
 
-  			// Handle duplicate events (two hour events back to back)
-  			$lastHour = isset($thisHour) ? $thisHour : array();
-  			$thisHour = array();
+  			$timesSubjects = $this->getIncludedSubjectsFromArray($events);
+  			$allSubjects = array_merge($allSubjects, $timesSubjects);
   			
-  		  /* @var $subject Subject */
-  			foreach($events as $subject) {
-  				
-  				// If this subject isn't excluded
-  				if(array_key_exists($subject->getID(), $this->excludedSubjects))
-  					continue;
-  				
-  				// Set the title using our subject list
-  				if(isset($this->possibleSubjects[$subject->getID()]))
-  					$subject->setTitle($this->possibleSubjects[$subject->getID()]);
-  				else 
-  					$subject->setTitle($subject->getID());
-  				
-  				// Add to our arrays if it wasn't there last hour
-  				if(!array_key_exists($subject->getID(), $lastHour))	 {
-  					$allSubjects[] = $subject;
-  				}
-  				
-  				// Include in the last hour list
-  				$thisHour[$subject->getID()] = $subject->getID();
-  				
-  			}
   		}
   	}
   	
@@ -87,7 +64,7 @@ class Timetable {
   /**
    * Echo out this table as an html table
    */
-  public function printTimetableAsHTML() {  
+  /*public function printTimetableAsHTML() {  
     $html =  "<table>";
     $html .=  "<thead><tr><td>Time</td><td>Monday</td><td>Tuesday</td><td>Wednesday</td><td>Thursday</td><td>Friday</td></tr></thead><tbody>";
     foreach($this->getTimetableTableArray() as $time => $row) {
@@ -101,7 +78,7 @@ class Timetable {
 
     include_once('vendor/htmLawed.php');
     echo htmLawed($html, array('tidy'=>4)); ;
-  }
+  }*/
   
   
   /**
@@ -109,16 +86,66 @@ class Timetable {
    */
   private function getTimetableTableArray() {
     $timetableTable = array();
+    
+    // For every day of the week
     foreach($this->timetableArray as $columnID => $date) {
+    	
+    	// Time of day
       foreach($date as $time => $subjects) {
+      	
+      	// Create empty coulmns
         if(!isset($timetableTable[$time])) $timetableTable[$time] = array();
-        foreach($subjects as $subject) {
-          if(!isset($timetableTable[$time][$columnID])) $timetableTable[$time][$columnID] = '';
-          $timetableTable[$time][$columnID] .= $subject . "\n<br />";
+        if(!isset($timetableTable[$time][$columnID])) $timetableTable[$time][$columnID] = array();
+        
+        // Get an array of included subjects
+        $timesSubjects = $this->getIncludedSubjectsFromArray($subjects);
+        
+        // Append to the table array
+        foreach($timesSubjects as $subject) {
+          $timetableTable[$time][$columnID][] = $subject . "\n<br />";
         }
       }
     }
     return $timetableTable;
+  }
+  
+  /**
+   * Return an array of non duplicate events for a specific time
+   * @warning Must be called per time period in ORDER
+   * @param Subject[] $subjects
+   */
+  private $thisHour = array();
+  private function getIncludedSubjectsFromArray($subjects) {
+  	
+  	// Handle duplicate events (two hour events back to back)
+  	$lastHour = isset($this->thisHour) ? $this->thisHour : array();
+  	$this->thisHour = array();
+  	
+  	$validSubjects = array();
+  		
+  	/* @var $subject Subject */
+  	foreach($subjects as $subject) {
+  	
+  		// Skip this subject if excluded
+  		if(array_key_exists($subject->getID(), $this->excludedSubjects))
+  			continue;
+  	
+  		// Set the title using our subject list
+  		if(isset($this->possibleSubjects[$subject->getID()]))
+  			$subject->setTitle($this->possibleSubjects[$subject->getID()]);
+  		else
+  			$subject->setTitle($subject->getID());
+  	
+  		// Add to our arrays if it wasn't there last hour
+  		if(!array_key_exists($subject->getID(), $lastHour))	 {
+  			$validSubjects[] = $subject;
+  		}
+  	
+  		// Include in the last hour list
+  		$this->thisHour[$subject->getID()] = $subject->getID();
+  	
+  	}
+  	
   }
   
 }
