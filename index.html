@@ -36,6 +36,7 @@
 
 	$(document).ready(function() {
 		
+		/** Make the links on the page clickable **/
 		function makeClickable($page, $nextpage) {
       if(currentPage >= 4)
           return true;
@@ -43,13 +44,16 @@
       /** Form page **/
       if(currentPage == 3) {
     	    $page.find('form').submit(function(e) {
-    	    	$('#wizard').steps("next");
-    	      var url = 'index.php'+$(this).attr('action');
-    	      
+    	    	
     	      // Send a post
+    	      var url = 'index.php'+$(this).attr('action');
     	      $nextpage.load( url, $(this).serializeArray(), function() {
     	    	  makeClickable($(this), $(pages[currentPage+1]));
     	      });
+    	      
+    	      // Move to the next page
+            furthestPage = currentPage+1;
+            $('#wizard').steps("next");
     	      
     	      e.preventDefault();
     	    });
@@ -60,15 +64,18 @@
       /** Every other page **/
 			$page.find('a').each(function() {				
 				$(this).click(function(e){
-					$('#wizard').steps("next");
-					var url = 'index.php'+$(this).attr('href');
-		
+					
+					// Load the content for the next page
+					var url = 'index.php'+$(this).attr('href');		
 					$nextpage.load(url, function() {
 						makeClickable($(this), $(pages[currentPage+1]));
 					});
 					
+          // Move to the next page
+          furthestPage = currentPage+1;
+          $('#wizard').steps("next");
+					
 					e.preventDefault();
-					return false;
 				});
 
 			});
@@ -79,42 +86,68 @@
 		});
 	});
 
-    $("#wizard").steps({
-        headerTag: "h1",
-        bodyTag: "section",
-        transitionEffect: "slideLeft",
-        labels: {
-        	finish: "Download"	
-        },
-       	onStepChanging: function (event, currentIndex, newIndex)
-           {
-       	       // Don't let the user skip pages
-               if (newIndex > furthestPage)
-               {
-                   return false;
-               }
-               
-               return true;
-           },
-           onStepChanged: function (event, currentIndex, priorIndex)
-           {
-        	     currentPage = currentIndex;
-        	     if(currentPage > furthestPage)  furthestPage = currentIndex;
-           },
-           onFinishing: function (event, currentIndex)
-           {
-               
-        	   // Should force a download
-        	   window.location="index.php?page=6";
-        	   
-             return true;
-           },
-           onFinished: function (event, currentIndex)
-           {
-               $(pages['6']).load("index.php?page=7");
-           }
+   $("#wizard").steps({
+       headerTag: "h1",
+       bodyTag: "section",
+       transitionEffect: "slideLeft",
+       labels: {
+       	finish: "Download"	
+       },
+      	onStepChanging: function (event, currentIndex, newIndex)
+          {
+      	       // Don't let the user skip pages
+              if (newIndex > furthestPage)
+              {
+                  return false;
+              }
+              
+              return true;
+          },
+          onStepChanged: function (event, currentIndex, priorIndex)
+          {
+       	     currentPage = currentIndex;
+       	     if(currentPage > furthestPage)  furthestPage = currentIndex;
+          },
+          onFinishing: function (event, currentIndex)
+          {
+              
+        	  var downloadURL = "index.php?page=6"; 
+        	  $.ajax({
+        		  type: "HEAD",
+        		  url: downloadURL
+        		})
+		        	  .done(function(data, textStatus, jqXHR ) {
 
-    });
+		        		  var requiredType = 'text/calendar';
+		        		  
+		        		  // Validate the content type header for our calendar
+		        		  if(jqXHR.getResponseHeader('Content-Type')) {
+		        			  var content = jqXHR.getResponseHeader('Content-Type');
+		        			  if(content.toLowerCase().substring(0, requiredType.length) == requiredType) {
+		        				  
+                      // Set the thanks message
+                      $(pages[4]).load("index.php?page=7", function () {
+                          // Should force a download
+                          window.location.href=downloadURL;
+                      });
+		        				  
+		        			  } else {
+		        				  alert( "Server error while building calendar. Please try again." );
+		        			  }
+		        				  
+		        		  } else {
+		        			  alert( "Server error while building calendar. Please try again." );
+		        		  }
+							    
+							    
+							  })
+							  .fail(function(jqXHR, textStatus, errorThrown) {
+								  alert( "Unexpected HTTP error on download request. " + errorThrown );
+							  });
+       	   
+            return true;
+          }
+       });
 
 </script>
 </body>
