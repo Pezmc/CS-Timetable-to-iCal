@@ -12,18 +12,75 @@
 <body>
 <div style="width:800px;margin:0 auto;padding-top:50px;">
 <div id="wizard">
-    <h1>First Step</h1>
-    <div>First Content</div>
+    <h1>Year</h1>
+    <section><div id="year">Loading</div></section>
  
-    <h1>Second Step</h1>
-    <div>Second Content</div>
+    <h1>Course</h1>
+    <section><div id="course">Loading</div></section>
+    
+    <h1>Semester</h1>
+    <section><div id="semester">Second Content</div></section>
+    
+    <h1>Courses</h1>
+    <section><div id="courses">None Yet!</div></section>
+    
+    <h1>Result</h1>
+    <section><div id="result">None Yet!</div></section>
 </div>
 </div>
 <script>
 
+  var currentPage = 0;
+  var pages = ['#year', '#course', '#semester', '#courses', '#result'];
+
+	$(document).ready(function() {
+		
+		function makeClickable($page, $nextpage) {
+      if(currentPage >= 4)
+          return true;
+			
+      /** Form page **/
+      if(currentPage == 3) {
+    	    $page.find('form').submit(function(e) {
+    	    	$('#wizard').steps("next");
+    	      var url = 'index.php'+$(this).attr('action');
+    	      
+    	      // Send a post
+    	      $nextpage.load( url, $(this).serializeArray(), function() {
+    	    	  makeClickable($(this), $(pages[currentPage+1]));
+    	      });
+    	      
+    	      e.preventDefault();
+    	    });
+    	  
+    	    return true;
+      }
+      
+      /** Every other page **/
+			$page.find('a').each(function() {				
+				$(this).click(function(e){
+					$('#wizard').steps("next");
+					var url = 'index.php'+$(this).attr('href');
+		
+					$nextpage.load(url, function() {
+						makeClickable($(this), $(pages[currentPage+1]));
+					});
+					
+					e.preventDefault();
+					return false;
+				});
+
+			});
+		}
+		
+		$('#year').load('index.php', function() {
+			  makeClickable($(pages[0]), $(pages[1]));
+		});
+	});
+
     $("#wizard").steps({
         headerTag: "h1",
-        bodyTag: "div",
+        bodyTag: "section",
         transitionEffect: "slideLeft",
         labels: {
         	finish: "Download"	
@@ -35,6 +92,8 @@
                {
                    return true;
                }
+               
+               
 
                /*// Forbid next action on "Warning" step if the user is to young
                if (newIndex === 3 && Number($("#age-2").val()) < 18)
@@ -55,7 +114,8 @@
            },
            onStepChanged: function (event, currentIndex, priorIndex)
            {
-               / Used to skip the "Warning" step if the user is old enough.
+        	     currentPage = currentIndex;
+               /*// Used to skip the "Warning" step if the user is old enough.
                if (currentIndex === 2 && Number($("#age-2").val()) >= 18)
                {
                    //$("#form-3").steps("next");
@@ -65,7 +125,7 @@
                if (currentIndex === 2 && priorIndex === 3)
                {
                    //$("#form-3").steps("previous");
-               }
+               }*/
            },
            onFinishing: function (event, currentIndex)
            {
