@@ -31,6 +31,7 @@
 <script>
 
   var currentPage = 0;
+  var furthestPage = 0;
   var pages = ['#year', '#course', '#semester', '#courses', '#result'];
 
 	$(document).ready(function() {
@@ -87,54 +88,30 @@
         },
        	onStepChanging: function (event, currentIndex, newIndex)
            {
-               // Allways allow previous action even if the current form is not valid!
-               if (currentIndex > newIndex)
-               {
-                   return true;
-               }
-               
-               
-
-               /*// Forbid next action on "Warning" step if the user is to young
-               if (newIndex === 3 && Number($("#age-2").val()) < 18)
+       	       // Don't let the user skip pages
+               if (newIndex > furthestPage)
                {
                    return false;
                }
-
-               // Needed in some cases if the user went back (clean up)
-               if (currentIndex < newIndex)
-               {
-                   // To remove error styles
-                   $("#form-3 .body:eq(" + newIndex + ") label.error").remove();
-                   $("#form-3 .body:eq(" + newIndex + ") .error").removeClass("error");
-               }
-
-               //$("#form-3").validate().settings.ignore = ":disabled,:hidden";*/
-               return true;//$("#form-3").valid();
+               
+               return true;
            },
            onStepChanged: function (event, currentIndex, priorIndex)
            {
         	     currentPage = currentIndex;
-               /*// Used to skip the "Warning" step if the user is old enough.
-               if (currentIndex === 2 && Number($("#age-2").val()) >= 18)
-               {
-                   //$("#form-3").steps("next");
-               }
-
-               // Used to skip the "Warning" step if the user is old enough and wants to the previous step.
-               if (currentIndex === 2 && priorIndex === 3)
-               {
-                   //$("#form-3").steps("previous");
-               }*/
+        	     if(currentPage > furthestPage)  furthestPage = currentIndex;
            },
            onFinishing: function (event, currentIndex)
            {
-               //$("#form-3").validate().settings.ignore = ":disabled";
-               return true;//$("#form-3").valid();
+               
+        	   // Should force a download
+        	   window.location="index.php?page=6";
+        	   
+             return true;
            },
            onFinished: function (event, currentIndex)
            {
-               alert("Submitted!");
+               $(pages['6']).load("index.php?page=7");
            }
 
     });
