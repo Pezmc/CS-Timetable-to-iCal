@@ -90,20 +90,22 @@ class Timetable {
     
     // For every day of the week
     foreach($this->timetableArray as $columnID => $date) {
-    	
+
     	// Time of day
       foreach($date as $time => $subjects) {
       	
       	// Create empty coulmns
-        if(!isset($timetableTable[$time])) $timetableTable[$time] = array();
-        if(!isset($timetableTable[$time][$columnID])) $timetableTable[$time][$columnID] = array();
+        if(!isset($timetableTable[$time])) {
+        	$timetableTable[$time] = array();
+        	for($i = 1;$i <= 5;$i++)	$timetableTable[$time][$i] = array();
+        }
         
         // Get an array of included subjects
         $timesSubjects = $this->getIncludedSubjectsFromArray($subjects);
         
         // Append to the table array
         foreach($timesSubjects as $subject) {
-          $timetableTable[$time][$columnID][] = $subject . "\n<br />";
+          $timetableTable[$time][$columnID][] = $subject;
         }
       }
     }
