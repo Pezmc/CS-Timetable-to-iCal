@@ -103,7 +103,7 @@ if($_PAGE == 1) {
 } elseif($_PAGE == 6 && isset($_SESSION['year']) && isset($_SESSION['grp']) && isset($_SESSION['sem']) && isset($_SESSION['excludedSubjects'])) {
 	
 	// Extract the session array
-	extract($_SESSION, EXTR_PREFIX_ALL, "S_");
+	extract($_SESSION, EXTR_PREFIX_ALL, "S");
 	
 	// Get our timetable
 	$timetable = getTimetableFor($S_year, $S_grp, $S_sem);
@@ -119,9 +119,11 @@ if($_PAGE == 1) {
 	}
 	
 	// Destroy session by wiping the cookie
-	$cookieParams = session_get_cookie_params();
-	setcookie(session_name(), '', 0, $cookieParams['path'], $cookieParams['domain'], $cookieParams['secure'], $cookieParams['httponly']);
-	session_destroy();
+	if(isset($_GET['wipe'])) {
+		$cookieParams = session_get_cookie_params();
+		setcookie(session_name(), '', 0, $cookieParams['path'], $cookieParams['domain'], $cookieParams['secure'], $cookieParams['httponly']);
+		session_destroy();
+	}
 	
 	// Force download the file
 	$calendar->downloadVCalendar();
