@@ -125,6 +125,8 @@ if($_PAGE == 1) {
 		session_destroy();
 	}
 	
+	$calendar->setTitle("CS-Calendar_".implode('-', array($S_year, $S_grp, $S_sem)));
+	
 	// Force download the file
 	$calendar->downloadVCalendar();
 

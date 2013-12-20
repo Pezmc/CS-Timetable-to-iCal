@@ -3,15 +3,24 @@
 class Calendar {
 
   private $events = array();
+  private $title = "CS-Calendar";
   
   public function addEvent(CalendarEvent $event) {
   	$this->events[] = $event;
   }
+  
+  public function setTitle($title) {
+  	$this->title = $title;
+  }
 
   public function downloadVCalendar() {
+  	// Decide on the title
+  	$title = $this->title;
+  	$title = preg_replace('/[^a-z0-9_-]/ui', '-', $title);
+  	
   	// Forces file download instead of web page
   	header('Content-type: text/calendar; charset=utf-8');
-  	header('Content-Disposition: inline; filename=calendar.ics');
+  	header('Content-Disposition: inline; filename='.$title.'.ics');
 
 		echo $this->createVCalendar();
   }
