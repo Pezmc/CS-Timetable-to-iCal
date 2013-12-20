@@ -13,22 +13,23 @@ function autoloadLib($className) {
 }
 spl_autoload_register('autoloadLib');
 
+// Include twig
 require_once 'Twig/lib/Twig/Autoloader.php';
 Twig_Autoloader::register();
-
 $loader = new Twig_Loader_Filesystem('templates');
 $twig = new Twig_Environment($loader, array(
 		'cache' => 'cache',
 		'debug' => false
 ));
 
-$_PAGE = isset($_REQUEST['page']) ? $_REQUEST['page'] : 1;
-
-$timetables = getCachedTimetablesList();
-
-// Use sessions to tidy the header
+// Use sessions to tidy the get request
 session_start();
 
+// Load all timetables and get the request page
+$_PAGE = isset($_REQUEST['page']) ? $_REQUEST['page'] : 1;
+$timetables = getCachedTimetablesList();
+
+// Load the appropriate page - this should be redone
 if($_PAGE == 1) {
 	$variables = array('page' => 2);
 	
