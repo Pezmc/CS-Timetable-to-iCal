@@ -113,3 +113,11 @@ table tr:hover td {
 #wizard section {
 	overflow-y: scroll;
 }
+
+#wizard section .loading {
+  margin: auto;
+  position: absolute;
+  top: -50px; left: 0; bottom: 0; right: 0;
+	width: 200px;
+	height: 200px;
+}
