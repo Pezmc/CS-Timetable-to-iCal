@@ -180,7 +180,7 @@ function getTimetableFor($year, $group, $semester) {
 	
 	// Unable to find the one the user is looking for
 	if(empty($timetables[$year][$group][$semester])) 
-		die("There is no known timetable by $year, $group, $semester...");
+		throw new Exception("There is no known timetable by $year, $group, $semester...");
 	
 	$url = 'http://studentnet.cs.manchester.ac.uk/ugt/timetable/'.$timetables[$year][$group][$semester];
 	$url = htmlspecialchars_decode($url);

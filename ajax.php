@@ -82,7 +82,11 @@ if($_PAGE == 1) {
 	extract($_SESSION, EXTR_PREFIX_ALL, "S");
 	
 	// Check it exists
-	$timetable = getTimetableFor($S_year, $S_grp, $S_sem);
+	$timetable = "";
+	try {
+		$timetable = getTimetableFor($S_year, $S_grp, $S_sem);
+	} catch(Exception $e){};
+	
 	if(empty($timetable)) {
 		echo $twig->render("error.twig", array('message' => "Unable to find semester $SS_em for group $S_grp in $S_year."));
 		die();
