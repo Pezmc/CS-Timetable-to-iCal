@@ -45,8 +45,10 @@ if($_PAGE == 1) {
 	// Check it exists
 	if(isset($timetables[$S_year]))
 		$timetable = $timetables[$S_year];
-	else
-		die("Unable to find $S_year.");
+	else {
+		echo $twig->render("error.twig", array('message' => "Unable to find $S_year."));
+		die();
+	}
 	
 	$variables = array('page' => 3);
 	
@@ -63,8 +65,10 @@ if($_PAGE == 1) {
 	// Check it exists
 	if(isset($timetables[$S_year][$S_grp]))
 		$timetable = $timetables[$S_year][$S_grp];
-	else
-		die("Unable to find group $S_grp in $S_year.");
+	else {
+		echo $twig->render("error.twig", array('message' => "Unable to find group $S_grp in $S_year."));
+		die();
+	}
 	
 	$variables = array('page' => 4);
 	
@@ -79,15 +83,21 @@ if($_PAGE == 1) {
 	
 	// Check it exists
 	$timetable = getTimetableFor($S_year, $S_grp, $S_sem);
-	if(empty($timetable))
-		die("Unable to find semester $SS_em for group $S_grp in $S_year.");
+	if(empty($timetable)) {
+		echo $twig->render("error.twig", array('message' => "Unable to find semester $SS_em for group $S_grp in $S_year."));
+		die();
+	}
 	
 	$variables = array('page' => 5);
 	
 	echo $twig->render("page4.twig", array('vars' => $variables, 'subjects' => $timetable->getSubjects()));
 	
-} elseif($_PAGE == 5 && isset($_SESSION['year']) && isset($_SESSION['grp']) && isset($_SESSION['sem']) && isset($_POST['subject'])) {
-
+} elseif($_PAGE == 5 && isset($_SESSION['year']) && isset($_SESSION['grp']) && isset($_SESSION['sem'])) {
+	if(empty($_POST['subject'])) {
+		echo $twig->render("error.twig", array('message' => "You didn't choose any subjects!"));
+		die();
+	}
+	
 	// Extract the session array
 	extract($_SESSION, EXTR_PREFIX_ALL, "S");	
 	
@@ -115,8 +125,8 @@ if($_PAGE == 1) {
 	try {
 		$calendar = CalendarFromTimetableFactory::build($timetable);
 	} catch (Exception $e) {
-		echo "Something failed while converting your timetable to a .ics file";
-		die("<small><pre>".$e->getTraceAsString()."</pre></small>");
+		echo $twig->render("error.twig", array('message' => "Something failed while converting your timetable to a .ics file", 'detail' => array($e->getTraceAsString())));
+		die();
 	}
 	
 	// Destroy session by wiping the cookie
@@ -135,10 +145,11 @@ if($_PAGE == 1) {
 	echo $twig->render("page7.twig");
 		
 } else {
-	echo "<h2>Something went wrong!</h2>";
-	echo "<p>Sorry about that, here's some debug info:</p>";
-	echo "<br /><br /><pre>".var_dump($_SESSION)."</pre>";
-	echo "<br /><pre>".var_dump($_POST)."</pre>";
-	echo "<br /><pre>".var_dump($_GET)."</pre>";
+
+	echo $twig->render("error.twig", array('message' => "Something failed while converting your timetable to a .ics file",
+																				 'detail' => array(var_export($_SESSION, true), var_export($_POST, true), var_export($_GET, true))
+																				));
+	die();
+
 }
 

@@ -1,0 +1,8 @@
+<h2>Something went wrong!</h2>
+<p>{{ message }}</p>
+{% if detail is not empty %}
+  <p>Sorry about that, here's some debug info:</p>
+  {% for info in detail %}
+    <small><pre>{{ info }}</pre></small>
+  {% endfor %}
+{% endif %}
