@@ -32,6 +32,17 @@ margin-bottom: 20px;
   text-shadow: 3px 2px 3px rgba(1,1,1,0.3);
 }
 
+/* Footer */
+.footer {
+	padding-top: 15px;
+	clear: both;
+	color: #CCC;
+	text-align: center;
+	margin: 0 auto;
+	font-size: 10px;
+	height: 13px;
+}
+
 /* Force scrolling */
 #wizard section {
   overflow-y: auto;
