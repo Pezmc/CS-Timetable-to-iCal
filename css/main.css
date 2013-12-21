@@ -10,6 +10,28 @@ a:hover {
   text-decoration:underline;
 }
 
+/* Wrap */
+.wrap {
+	width:800px;margin:0 auto;
+}
+
+/* Header */
+.header {
+background-image: url(../img/shadow.png);
+background-position: 50% 100%;
+background-repeat: no-repeat;
+height: 100px;
+position: relative;
+text-align:center;
+margin-bottom: 20px;
+}
+
+.header h1 {
+	padding-bottom: 50px;
+	font-size: 50px;
+  text-shadow: 3px 2px 3px rgba(1,1,1,0.3);
+}
+
 /* Force scrolling */
 #wizard section {
   overflow-y: auto;
