@@ -24,7 +24,7 @@ class Timetable {
   public function excludeSubjects($array=null) {
   	if(is_array($array)) {
 	  	foreach($array as $subjectID => $value) {
-	  		$excludedSubjects[$subjectID] = $value;
+	  		$this->excludedSubjects[$subjectID] = $value;
 	  	}
   	}
   }
@@ -125,10 +125,13 @@ class Timetable {
   	$this->thisHour = array();
   	
   	$validSubjects = array();
-  		
+  	
   	/* @var $subject Subject */
   	foreach($subjects as $subject) {
   	
+  		echo $subject->getID() . " <br />"; 
+  		var_dump(array_key_exists($subject->getID(), $this->excludedSubjects));
+  		
   		// Skip this subject if excluded
   		if(array_key_exists($subject->getID(), $this->excludedSubjects))
   			continue;
