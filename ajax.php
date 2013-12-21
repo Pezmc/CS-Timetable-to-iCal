@@ -30,6 +30,7 @@ $_PAGE = isset($_REQUEST['page']) ? $_REQUEST['page'] : 1;
 $timetables = getCachedTimetablesList();
 
 // Load the appropriate page - this should be redone
+// Definitely needs to be redone now it's a 100 line if/else...
 if($_PAGE == 1) {
 	$variables = array('page' => 2);
 	
@@ -154,6 +155,5 @@ if($_PAGE == 1) {
 																				 'detail' => array(var_export($_SESSION, true), var_export($_POST, true), var_export($_GET, true))
 																				));
 	die();
-
 }
 
