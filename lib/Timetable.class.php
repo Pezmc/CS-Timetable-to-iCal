@@ -128,9 +128,6 @@ class Timetable {
   	
   	/* @var $subject Subject */
   	foreach($subjects as $subject) {
-  	
-  		echo $subject->getID() . " <br />"; 
-  		var_dump(array_key_exists($subject->getID(), $this->excludedSubjects));
   		
   		// Skip this subject if excluded
   		if(array_key_exists($subject->getID(), $this->excludedSubjects))
