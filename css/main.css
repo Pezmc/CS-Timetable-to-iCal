@@ -248,3 +248,8 @@ table tr:hover td {
 #wizard section #result p {
   margin: 0.2em 0;
 }
+
+#wizard #courselist {
+  height: 440px;
+  overflow-y: auto;
+}

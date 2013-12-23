@@ -18,7 +18,7 @@ You can try the [live demo](http://labs.pezcuckow.com/cstimetable/) or do the fo
 
 1. Download the repo with `git clone`
 2. Use `git submodule init && git submodule update` to pull in Twig
-3. Allow writing to the cache folder with `chmod -R cache 777`
+3. Allow writing to the cache folder with `chmod -R 777 cache`
 4. Serve the PHP with a server
 5. Open index.html and follow the steps to generate your timetable
 
