@@ -28,6 +28,7 @@ Todo
 
 - ~~Handle two hour events~~ Done
 - ~~Add a nicer frontend~~ Done
+- Prompt mobile users and add mobile layout compatibility
 - Allow the user to select their **groups** - currently getting collisions on some timetables
 - Handle subjects without a course code (1st year tutorial I'm looking at you!)
 - Move timetable.php into a class
