@@ -1,6 +1,10 @@
+<input id="tickall" type="button" class="clean-gray" value="Tick all"/>
+<input id="clear" type="button" class="clean-gray" value="Clear"/>
 <form action="?{{ vars|url_encode }}" method="POST">
+<div id="courselist">
 {% for key, value in subjects %}
 <input id="{{ key }}" type="checkbox" name="subject[]" value="{{ key }}" checked="checked" /> <label for="{{ key }}">{{ value }} [{{ key }}]</label><br />
 {% endfor %}
+</div>
 <input type="submit" class="clean-gray">
 </form>

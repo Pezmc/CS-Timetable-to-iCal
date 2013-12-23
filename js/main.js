@@ -51,6 +51,14 @@ $(document).ready(function() {
     $('#year').load('ajax.php', function() {
         makeClickable($(pages[0]), $(pages[1]));
     });
+
+    // Clear and tick all functionality for page 4
+    $('body').on('click', '#tickall', function() {
+        $(this).parent().find(':checkbox').prop('checked', 'checked');
+    }).on('click', '#clear', function() {
+        $(this).parent().find(':checkbox').prop('checked', '');
+    });
+
 });
 
 $("#wizard").steps({
