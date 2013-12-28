@@ -81,26 +81,6 @@ class Timetable {
   	
   	return $allSubjects;
   }
-
-  /**
-   * Echo out this table as an html table
-   */
-  /*public function printTimetableAsHTML() {  
-    $html =  "<table>";
-    $html .=  "<thead><tr><td>Time</td><td>Monday</td><td>Tuesday</td><td>Wednesday</td><td>Thursday</td><td>Friday</td></tr></thead><tbody>";
-    foreach($this->getTimetableTableArray() as $time => $row) {
-      $html .= "<tr><td>$time</td>";
-      for($i = $this->startDay; $i <= $this->endDay; $i++) {
-        $html .= "<td>".(isset($row[$i]) ? $row[$i] : '')."</td>\n";
-      }
-      $html .= "</tr>";
-    }
-    $html .= "</tbody></table>";
-
-    include_once('vendor/htmLawed.php');
-    echo htmLawed($html, array('tidy'=>4)); ;
-  }*/
-  
   
   /**
    * Convert this timetable to a row/column structure suitable for a table
