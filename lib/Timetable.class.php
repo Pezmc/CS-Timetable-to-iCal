@@ -6,7 +6,28 @@ class Timetable {
   private $possibleSubjects = array();
   private $excludedSubjects = array();
   
+  // Timetable config inclusive
+  private $startDay = 1;
+  private $endDay = 5;
+  
+  private $startHour = 9;
+  private $endHour = 17;
+  
   public function __construct() {
+  	
+    // Create an empty timetable
+    for($day=$this->startDay; $day <= $this->endDay; $day++) {
+    	
+    	if(!isset($this->timetableArray[$day])) $this->timetableArray[$day] = array();
+    	
+    	for($hour=$this->startHour; $hour <= $this->endHour; $hour++) {
+    		
+    		$time = sprintf("%02d:00", $hour);
+    		
+    		if(!isset($this->timetableArray[$day][$time])) $this->timetableArray[$day][$time] = array();
+    		
+    	}
+    }
     
   }
   
@@ -69,7 +90,7 @@ class Timetable {
     $html .=  "<thead><tr><td>Time</td><td>Monday</td><td>Tuesday</td><td>Wednesday</td><td>Thursday</td><td>Friday</td></tr></thead><tbody>";
     foreach($this->getTimetableTableArray() as $time => $row) {
       $html .= "<tr><td>$time</td>";
-      for($i = 1; $i <= 5; $i++) {
+      for($i = $this->startDay; $i <= $this->endDay; $i++) {
         $html .= "<td>".(isset($row[$i]) ? $row[$i] : '')."</td>\n";
       }
       $html .= "</tr>";
@@ -97,10 +118,10 @@ class Timetable {
       	// Create empty coulmns
         if(!isset($timetableTable[$time])) {
         	$timetableTable[$time] = array();
-        	for($i = 1;$i <= 5;$i++)	$timetableTable[$time][$i] = array();
+        	for($i = $this->startDay;$i <= $this->endDay;$i++)	$timetableTable[$time][$i] = array();
         }
         
-        // Get an array of included subjects
+        // Get an array of included subjects for this day/time
         $timesSubjects = $this->getIncludedSubjectsFromArray($subjects);
         
         // Append to the table array
