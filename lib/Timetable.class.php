@@ -145,16 +145,20 @@ class Timetable {
   			$subject->setTitle($subject->getID());
   	
   		// Add to our arrays if it wasn't there last hour
-  		if(!array_key_exists($subject->getID(), $lastHour))	 {
+  		if(!array_key_exists($this->hashSubject($subject), $lastHour))	 {
   			$validSubjects[] = $subject;
   		}
   	
   		// Include in the last hour list
-  		$this->thisHour[$subject->getID()] = $subject->getID();
+  		$this->thisHour[$this->hashSubject($subject)] = $subject->getID();
   	
   	}
   	
   	return $validSubjects;
+  }
+  
+  private function hashSubject($subject) {
+  	return md5($subject->getID().$subject->getLocation());
   }
   
 }
