@@ -30,17 +30,47 @@ class CalendarFromTimetableFactory {
   		
   		// Location
   		$event->setLocation($subject->getLocation());
- 
-  		// Add an event for every occurance
-  		foreach($subject->getDates() as $date) {
-  			$dateEvent = clone $event;
-
-  			$dateEvent->setStartDate($date);
-  			$dateEvent->setStartTimeString($subject->getStartTime());
+  		
+  		// Loop through all our dates and sort them into groups of repeating events
+  		$remainingDates = $subject->getDates();
+  		$dateGroups = array();
+  		while(!empty($remainingDates)) {
   			
-  			$dateEvent->setEndDate($date);
+  			// Get the first item
+  			/* @var $startDate DateTime */
+  			$startDate = array_shift($remainingDates);
+  			
+  			// Try weekly
+				$events = self::findRepeatingEvents($startDate, $remainingDates, 7);
+				if($events->getOccurrences() == 1) {
+					
+					// Try bi-weekly
+					$events = self::findRepeatingEvents($startDate, $remainingDates, 14);
+				}
+  			
+  			$dateGroups[] = $events;
+  		}
+  		
+  		// Add an event for every group of events
+  		foreach($dateGroups as $events) {
+  			
+  			$dateEvent = clone $event;
+  			
+  			$dateEvent->setStartDate($events->getStartDate());
+  			$dateEvent->setStartTimeString($subject->getStartTime());
+  				
+  			$dateEvent->setEndDate($events->getStartDate());
   			$dateEvent->setEndTimeString($subject->getEndTime());
   			
+  			// Repeating events
+  			if($events->getOccurrences() > 1) {
+	  			$dateEvent->setRepeatCount($events->getOccurrences());
+	  			$dateEvent->setRepeatFrequency(CalendarEvent::Weekly);
+	  			
+	  			if($events->getInterval()->d > 7)
+	  				$dateEvent->setRepeatInterval(floor($events->getInterval()->d / 7));
+  			}
+  				
   			$calendar->addEvent($dateEvent);
   		}
   		
@@ -48,7 +78,32 @@ class CalendarFromTimetableFactory {
   	
   	return $calendar;
   }
-   
+  
+  private static function findRepeatingEvents($startDate, &$datesArray, $intervalDays=7) {
+  	
+  	$event = new RepeatingEvent($startDate);
+  	
+  	$endDate = $startDate;
+  	$repeatCount = 1;
+  		
+  	foreach($datesArray as $key => $date) {
+  		$interval = $endDate->diff($date);
+  		if($interval->d == $intervalDays) {
+  			unset($datesArray[$key]);
+  			$endDate = clone $date;
+  			$repeatCount++;
+  		}
+  	}
+  	
+  	if($repeatCount > 1) {
+	  	$event->setEndDate($endDate);
+	  	$event->setOccurrences($repeatCount);
+	  	$event->setIntervalSpec('P'.$intervalDays.'D');
+  	}
+  	
+  	return $event;
+  }
+  
 }
 
 ?>

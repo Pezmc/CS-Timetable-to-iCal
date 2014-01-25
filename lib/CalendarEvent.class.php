@@ -2,6 +2,31 @@
 
 class CalendarEvent extends Event {
   
+	// RRule Frequency RFC Spec
+	const Secondly = 'MONTHLY';
+	const Minutely = 'MINUTELY';
+	const Hourly = 'HOURLY';
+	const Daily = 'DAILY';
+	const Weekly = 'WEEKLY';
+	const Monthly = 'MONTHLY';
+	const Yearly = 'YEARLY';
+	
+	private $occurrences = 1;
+	private $interval = 1;
+	private $frequency = '';
+	
+	public function setRepeatCount($count) {
+		$this->occurrences = $count;
+	}
+	
+	public function setRepeatInterval($interval) {
+		$this->interval = $interval;
+	}
+	
+	public function setRepeatFrequency($frequency) {
+		$this->frequency = $frequency;
+	}
+	
 	public function getVEventTagArray() {
 		$tags = array();
 		
@@ -14,7 +39,13 @@ class CalendarEvent extends Event {
 		$tags['DESCRIPTION'] = $this->escapeNewLines($this->getDescription());
 		$tags['LOCATION'] = $this->escapeString($this->getLocation());
 		
-		$tags['-'] = $this->getVStringFromTags($this->getAlarm());
+		if($this->occurrences > 1) 
+			$tags['RRULE'] = sprintf('FREQ=%s;COUNT=%d', $this->frequency, $this->occurrences);
+		
+		if($this->interval > 1)
+			$tags['RRULE'] .= sprintf(';INTERVAL=%d', $this->interval);
+		
+		//$tags['-'] = $this->getVStringFromTags($this->getAlarm());
 		
 		$tags['END'] = 'VEVENT';
 
