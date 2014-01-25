@@ -36,9 +36,12 @@ function getCachedURL($url, $cache_file=null, $time=3600) {
 ////////
 
 function getCachedTimetablesList() {
+
+  $cache_time = 86400 * 7; // cache for 7 days
+
   $cache_file = 'cache/timetables.json';
   
-  $data = getCachedFileOrFalse($cache_file);
+  $data = getCachedFileOrFalse($cache_file, $cache_time);
   if($data) {
     return json_decode($data, TRUE);
   }
@@ -155,16 +158,19 @@ function getTimetableFromTimetableHTML($timetableHTML) {
 }
   
 function getCachedTimetable($url) {
+
+  $timetable_cache_time = 86400 * 3; //cache for 3 days
+  $url_cache_time = 86400 * 7; //cache for 7 days
 	
 	$cache_file = 'cache/timetable_'.md5($url).'.txt';
 	
 	// Check in our object cache first
-	$timetableText = getCachedFileOrFalse($cache_file);
+	$timetableText = getCachedFileOrFalse($cache_file, $timetable_cache_time);
 	if($timetableText && ($timetable = unserialize($timetableText)))
 		return $timetable;
 	
 	// Download and parse a (cache) of the timetable
-	$timetablesHTML = getCachedURL($url);
+	$timetablesHTML = getCachedURL($url, null, $url_cache_time);
 	$html = str_get_html($timetablesHTML);
 	
 	// Create and cache timetable
