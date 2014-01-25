@@ -123,11 +123,11 @@ class Timetable {
   	
   	
   	// Handle duplicate events (two hour events back to back)
-  	$this->thisHour = array();
   	if($ignoreBackToBack)
   		$lastHour = isset($this->thisHour) ? $this->thisHour : array();
   	else 
   		$lastHour = array();
+  	$this->thisHour = array();
   	
   	$validSubjects = array();
   	
@@ -145,7 +145,7 @@ class Timetable {
   			$subject->setTitle($subject->getID());
   	
   		// Add to our arrays if it wasn't there last hour
-  		if(!$ignoreBackToBack || !array_key_exists($subject->getID(), $lastHour))	 {
+  		if(!array_key_exists($subject->getID(), $lastHour))	 {
   			$validSubjects[] = $subject;
   		}
   	
