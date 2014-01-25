@@ -102,7 +102,7 @@ class Timetable {
         }
         
         // Get an array of included subjects for this day/time
-        $timesSubjects = $this->getIncludedSubjectsFromArray($subjects);
+        $timesSubjects = $this->getIncludedSubjectsFromArray($subjects, false);
         
         // Append to the table array
         foreach($timesSubjects as $subject) {
@@ -119,11 +119,15 @@ class Timetable {
    * @param Subject[] $subjects
    */
   private $thisHour = array();
-  private function getIncludedSubjectsFromArray($subjects) {
+  private function getIncludedSubjectsFromArray($subjects, $ignoreBackToBack=true) {
+  	
   	
   	// Handle duplicate events (two hour events back to back)
-  	$lastHour = isset($this->thisHour) ? $this->thisHour : array();
   	$this->thisHour = array();
+  	if($ignoreBackToBack)
+  		$lastHour = isset($this->thisHour) ? $this->thisHour : array();
+  	else 
+  		$lastHour = array();
   	
   	$validSubjects = array();
   	
@@ -141,7 +145,7 @@ class Timetable {
   			$subject->setTitle($subject->getID());
   	
   		// Add to our arrays if it wasn't there last hour
-  		if(!array_key_exists($subject->getID(), $lastHour))	 {
+  		if(!$ignoreBackToBack || !array_key_exists($subject->getID(), $lastHour))	 {
   			$validSubjects[] = $subject;
   		}
   	
