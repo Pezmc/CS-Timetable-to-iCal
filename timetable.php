@@ -105,9 +105,17 @@ function getSubjectsFromTimetableHTML($timetableHTML) {
 	$lecturesHTML = $timetableHTML->find('div.timetablebackground ul li');
 	foreach($lecturesHTML as $lectureHTML) {
 		$lectureHTML = explode(" ", $lectureHTML->plaintext, 2);
+		
+		// Special case
+		if($lectureHTML[0] == 'COMP-PASS') $lectureHTML[0] = 'PASS';
+		elseif($lectureHTML[0] == 'COMP-1st') {
+			$lectureHTML[0] = 'COMP1st';
+			$lectureHTML[1] = '1st ' . $lectureHTML[1];
+		}
+		
 		$subjectList[$lectureHTML[0]] = $lectureHTML[1];
 	}
-	
+
 	return $subjectList;
 }
 
