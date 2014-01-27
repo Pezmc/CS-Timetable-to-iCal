@@ -5,7 +5,10 @@ include_once('vendor/simple_html_dom.php');
 
 //////////
 
-function getCachedFileOrFalse($cache_file, $time=3600) {
+function getCachedFileOrFalse($cache_file, $time=3600, $forceUpdate=false) {
+	
+  if($forceUpdate)
+     return false;
     
   if (file_exists($cache_file) && (filemtime($cache_file) > (time() - $time ))) {
      return file_get_contents($cache_file);
@@ -17,13 +20,13 @@ function getCachedFileOrFalse($cache_file, $time=3600) {
 /**
  * Download a url or get it from the cache
  */
-function getCachedURL($url, $cache_file=null, $time=3600) {
+function getCachedURL($url, $cache_file=null, $time=3600, $forceUpdate=false) {
 
   // Choose the cache filename and folder
   if(!$cache_file) $cache_file = md5($url).'.txt';
   $cache_file = 'cache/'.$cache_file;
 
-  $data = getCachedFileOrFalse($cache_file, $time);
+  $data = getCachedFileOrFalse($cache_file, $time, $forceUpdate);
   
   if(!$data) {
      $data = file_get_contents($url);
@@ -35,13 +38,13 @@ function getCachedURL($url, $cache_file=null, $time=3600) {
 
 ////////
 
-function getCachedTimetablesList() {
+function getCachedTimetablesList($forceUpdate=false) {
 
   $cache_time = 86400 * 7; // cache for 7 days
 
   $cache_file = 'cache/timetables.json';
   
-  $data = getCachedFileOrFalse($cache_file, $cache_time);
+  $data = getCachedFileOrFalse($cache_file, $cache_time, $forceUpdate);
   if($data) {
     return json_decode($data, TRUE);
   }
@@ -165,20 +168,20 @@ function getTimetableFromTimetableHTML($timetableHTML) {
 	return $timetable;
 }
   
-function getCachedTimetable($url) {
+function getCachedTimetable($url, $forceUpdate=false) {
 
-  $timetable_cache_time = 86400 * 3; //cache for 3 days
-  $url_cache_time = 86400 * 7; //cache for 7 days
+	$timetable_cache_time = 86400 * 3; //cache for 3 days
+	$url_cache_time = 86400 * 7; //cache for 7 days
 	
 	$cache_file = 'cache/timetable_'.md5($url).'.txt';
 	
 	// Check in our object cache first
-	$timetableText = getCachedFileOrFalse($cache_file, $timetable_cache_time);
+	$timetableText = getCachedFileOrFalse($cache_file, $timetable_cache_time, $foceUpdate);
 	if($timetableText && ($timetable = unserialize($timetableText)))
 		return $timetable;
 	
 	// Download and parse a (cache) of the timetable
-	$timetablesHTML = getCachedURL($url, null, $url_cache_time);
+	$timetablesHTML = getCachedURL($url, null, $url_cache_time, $forceUpdate);
 	$html = str_get_html($timetablesHTML);
 	
 	// Create and cache timetable
@@ -188,7 +191,7 @@ function getCachedTimetable($url) {
 	return $timetable;
 }
 
-function getTimetableFor($year, $group, $semester) {
+function getTimetableFor($year, $group, $semester, $forceUpdate=false) {
 	// Possible timetables
 	$timetables = getCachedTimetablesList();
 	
@@ -200,7 +203,7 @@ function getTimetableFor($year, $group, $semester) {
 	$url = htmlspecialchars_decode($url);
 	
 	// Get a timetable from cache or create from new
-	return getCachedTimetable($url);
+	return getCachedTimetable($url, $forceUpdate);
 }
 
 ?>
