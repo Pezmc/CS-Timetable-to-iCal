@@ -176,7 +176,7 @@ function getCachedTimetable($url, $forceUpdate=false) {
 	$cache_file = 'cache/timetable_'.md5($url).'.txt';
 	
 	// Check in our object cache first
-	$timetableText = getCachedFileOrFalse($cache_file, $timetable_cache_time, $foceUpdate);
+	$timetableText = getCachedFileOrFalse($cache_file, $timetable_cache_time, $forceUpdate);
 	if($timetableText && ($timetable = unserialize($timetableText)))
 		return $timetable;
 	
