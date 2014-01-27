@@ -148,7 +148,32 @@ if($_PAGE == 1) {
 
 } elseif($_PAGE == 7) {
 	echo $twig->render("page7.twig");
-		
+	
+} elseif($_PAGE == 999 && md5($_GET['password']) == '215b54b9b92aec12dacd24347b1b6922') {
+	
+	// Hacky cache update
+	echo "Downloading timetables<br />";
+	flush();
+	ob_flush();	
+	$timetables = getCachedTimetablesList(true);
+	flush();
+	ob_flush();
+	echo "Done<br />";
+	
+	foreach($timetables as $year => $classes) {
+		foreach($classes as $class => $semesters) {
+			foreach($semesters as $semester => $url) {
+				echo "Downloading $year, $class, $semester<br />";
+				flush();
+				ob_flush();
+				$timetable = getTimetableFor($year, $class, $semester, true);
+				echo "Done<br /><br />";
+				flush();
+				ob_flush();
+			}
+		}
+	}
+	
 } else {
 
 	echo $twig->render("error.twig", array('message' => "Something failed while converting your timetable to a .ics file",
