@@ -79,6 +79,9 @@ $("#wizard").steps({
     onStepChanged: function(event, currentIndex, priorIndex) {
         currentPage = currentIndex;
         if (currentPage > furthestPage) furthestPage = currentIndex;
+        
+        if (currentIndex == 4)
+        	$('#wizard a[href="#finish"]').twinkle();
     },
     onFinishing: function(event, currentIndex) {
 
