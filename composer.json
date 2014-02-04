@@ -1,0 +1,14 @@
+{
+    "name": "pezmc/cs-timetable-to-ical",
+    "description": "Convert the CS Manchester Timetable pages into iCal files",
+    "require": {
+        "twig/twig": "dev"
+    },
+    "authors": [
+        {
+            "name": "Pez Cuckow",
+            "email": "pez@pezcuckow.com"
+        }
+    ],
+    "minimum-stability": "alpha"
+}
